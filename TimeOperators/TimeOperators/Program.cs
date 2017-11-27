@@ -89,7 +89,7 @@ namespace TimeOperators
 
         public override int GetHashCode()
         {
-            return hour ^ minuete ^ second;
+            return (hour ^ minuete ^ second);
         }
 
         public override bool Equals(object obj)
@@ -238,24 +238,36 @@ namespace TimeOperators
         {
             int count = Sec / 60;
 
-            if (count <= 1) // sec
+			if (count <= 1) // sec
+			{
                 T.second += Sec;
+				if (T.second > 60)
+					T.minuete++;
+			}
 
             if (count > 1 && 60 > count) // min
             {
                 T.minuete += count;
+				if (T.minuete > 60)
+					T.hour++;
 
-                T.second += Sec - (count * 60);
-            }
+				T.second += Sec - (count * 60);
+				if (T.second > 60)
+					T.minuete++;
+			}
 
             if (count >= 60) // hour
             {
                 T.hour += Sec / 3600;
 
                 T.minuete += Sec - (count * 60);
+				if (T.minuete > 60)
+					T.hour++;
 
-                T.second += Sec - 3600;
-            }
+				T.second += Sec - 3600;
+				if (T.second > 60)
+					T.minuete++;
+			}
 
             return T;
         }
