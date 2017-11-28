@@ -101,26 +101,49 @@ namespace TimeOperators
         {
             string result = null;
 
-            if (hour < 10)
-                result = '0' + hour.ToString();
+			while (second > 59)
+			{ 
+				second %= 60;
+				minuete++;
+			}
+
+			if (second < 10)
+                result += '0' + second.ToString();
             else
-                result = hour.ToString();
+                result += second.ToString();
 
             result += ':';
 
-            if (minuete < 10)
+			while (minuete > 59)
+			{ 
+				minuete %= 60;
+				hour++;
+			}
+
+			if (minuete < 10)
                 result += '0' + minuete.ToString();
             else
                 result += minuete.ToString();
 
             result += ':';
 
-            if (second < 10)
-                result += '0' + second.ToString();
-            else
-                result += second.ToString();
+			while (hour > 24)
+			{ 
+				hour %= 24;
+			}
 
-            return result;
+            if (hour < 10)
+                result += '0' + hour.ToString();
+            else
+                result += hour.ToString();
+
+			string tempSec = result.Substring(6);
+			result = result.Remove(6);
+			string tempHour = result.Remove(2);
+			result = result.Remove(0, 2);
+
+			result = tempSec + result + tempHour;
+			return result;
         }
 
         public static Time operator ++(Time T)
@@ -264,7 +287,7 @@ namespace TimeOperators
 				if (T.minuete > 60)
 					T.hour++;
 
-				T.second += Sec - 3600;
+				T.second += Sec - (3600 * (count / 60));
 				if (T.second > 60)
 					T.minuete++;
 			}
@@ -294,7 +317,7 @@ namespace TimeOperators
             //Time TOne = new Time(1, 1, 1);
             //Time TTwo = new Time(1, 1, 1);
 
-            Time T = new Time(0, 0, 0);
+            Time T = new Time(23, 59, 4);
 
             Console.WriteLine($"{TOne.ToString()} < {TTwo.ToString()} : {TOne < TTwo}");
             Console.WriteLine($"{TOne.ToString()} > {TTwo.ToString()} : {TOne > TTwo}");
@@ -311,45 +334,52 @@ namespace TimeOperators
             Console.WriteLine();
             Console.WriteLine($"ToString: {TOne.ToString()}\t{TTwo.ToString()}");
             Console.WriteLine();
-            //Console.WriteLine("++");
-            //while (true)
-            //{
-            //    Console.CursorVisible = false;
-            //    Console.SetCursorPosition(0, 16);
-            //    Console.WriteLine("        ");
-            //    Console.SetCursorPosition(0, 16);
-            //    Console.WriteLine($"{T++.ToString()}");
 
-            //    if (Console.KeyAvailable)
-            //        if (ConsoleKey.Escape == Console.ReadKey().Key)
-            //            break;
+			//Console.WriteLine("++");
+			//while (true)
+			//{
+			//	Console.CursorVisible = false;
+			//	Console.SetCursorPosition(0, 16);
+			//	Console.WriteLine("        ");
+			//	Console.SetCursorPosition(0, 16);
+			//	Console.WriteLine($"{T++.ToString()}");
 
-            //    Thread.Sleep(1000);
-            //}
-            //Console.WriteLine();
-            //Console.WriteLine("--");
-            //while (true)
-            //{
-            //    Console.CursorVisible = false;
-            //    Console.SetCursorPosition(0, 18);
-            //    Console.WriteLine("        ");
-            //    Console.SetCursorPosition(0, 18);
-            //    Console.WriteLine($"{T--.ToString()}");
+			//	if (Console.KeyAvailable)
+			//		if (ConsoleKey.Escape == Console.ReadKey().Key)
+			//			break;
 
-            //    if (Console.KeyAvailable)
-            //        if (ConsoleKey.Escape == Console.ReadKey().Key)
-            //            break;
+			//	Thread.Sleep(10);
+			//}
+			//Console.WriteLine();
 
-            //    Thread.Sleep(1000);
-            //}
-            //Console.WriteLine();
-            Console.WriteLine($"{TOne.ToString()} - {TTwo.ToString()} = {(TOne - TTwo).ToString()}");
+			//Console.WriteLine("--");
+			//while (true)
+			//{
+			//    Console.CursorVisible = false;
+			//    Console.SetCursorPosition(0, 18);
+			//    Console.WriteLine("        ");
+			//    Console.SetCursorPosition(0, 18);
+			//    Console.WriteLine($"{T--.ToString()}");
+
+			//    if (Console.KeyAvailable)
+			//        if (ConsoleKey.Escape == Console.ReadKey().Key)
+			//            break;
+
+			//    Thread.Sleep(1000);
+			//}
+			//Console.WriteLine();
+
+			Console.WriteLine($"{TOne.ToString()} - {TTwo.ToString()} = {(TOne - TTwo).ToString()}");
             Console.WriteLine($"{TTwo.ToString()} - {TOne.ToString()} = {(TTwo - TOne).ToString()}");
             Console.WriteLine();
-            Console.Write("Write seconds for plus: ");
-            int.TryParse(Console.ReadLine(), out int sec);
-            Console.WriteLine($"{T.ToString()} + {sec}sec = {(T + sec).ToString()}");
-        }
+            //Console.Write("Write seconds for plus: ");
+            //int.TryParse(Console.ReadLine(), out int sec);
+            //Console.WriteLine($"{T.ToString()} + {sec}sec = {(T + sec).ToString()}");
+
+			Console.Write("Write seconds for minus: ");
+			int.TryParse(Console.ReadLine(), out int sec);
+			Console.WriteLine($"{T.ToString()} - {sec}sec = {(T - sec).ToString()}");
+		}
     }
 }
 //-----------------------------------------------------------------
